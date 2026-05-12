@@ -3,6 +3,7 @@ import React, {
 } from "react";
 
 import axios from "axios";
+import API_BASE from "../api";
 
 import { toast }
 from "react-toastify";
@@ -110,7 +111,7 @@ const Register = ({
         data.append("profilePhoto", form.profilePhoto);
 
         const res = await axios.post(
-          "http://localhost:5000/api/auth/register",
+          `${API_BASE}/api/auth/register`,
           data
         );
 
@@ -151,7 +152,7 @@ const Register = ({
       setLoading(true);
 
       await axios.post(
-        "http://localhost:5000/api/email/send-otp",
+        `${API_BASE}/api/email/send-otp`,
         {
           email: form.email,
           isRegistration: true,
@@ -181,7 +182,7 @@ const Register = ({
       setLoading(true);
 
       await axios.post(
-        "http://localhost:5000/api/email/verify-otp",
+        `${API_BASE}/api/email/verify-otp`,
         {
           email: form.email,
           otp: form.emailOtp,
@@ -212,7 +213,7 @@ const Register = ({
       setLoading(true);
 
       await axios.post(
-        "http://localhost:5000/api/sms/send-otp",
+        `${API_BASE}/api/sms/send-otp`,
         {
           email: form.email,
           phone: form.phone,
@@ -242,7 +243,7 @@ const Register = ({
       setLoading(true);
 
       await axios.post(
-        "http://localhost:5000/api/sms/verify-otp",
+        `${API_BASE}/api/sms/verify-otp`,
         {
           email: form.email,
           phone: form.phone,

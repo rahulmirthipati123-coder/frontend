@@ -4,6 +4,7 @@ import React, {
 } from "react";
 
 import axios from "axios";
+import API_BASE from "../api";
 
 const Profile = () => {
 
@@ -24,7 +25,7 @@ const Profile = () => {
 
         const res =
           await axios.get(
-            "http://localhost:5000/api/user/profile",
+            `${API_BASE}/api/user/profile`,
             {
               headers: {
                 authorization:

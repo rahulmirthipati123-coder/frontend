@@ -3,6 +3,7 @@ import React, {
 } from "react";
 
 import axios from "axios";
+import API_BASE from "../api";
 
 import { toast }
 from "react-toastify";
@@ -52,7 +53,7 @@ const Login = ({
         }
 
         await axios.post(
-          "http://localhost:5000/api/auth/login",
+          `${API_BASE}/api/auth/login`,
           {
             email: form.email,
             password: form.password,
@@ -60,7 +61,7 @@ const Login = ({
         );
 
         await axios.post(
-          "http://localhost:5000/api/email/send-otp",
+          `${API_BASE}/api/email/send-otp`,
           {
             email: form.email,
           }
@@ -73,7 +74,7 @@ const Login = ({
         }
 
         await axios.post(
-          "http://localhost:5000/api/sms/send-otp",
+          `${API_BASE}/api/sms/send-otp`,
           {
             phone: form.phone,
             isRegistration: false,
@@ -107,7 +108,7 @@ const Login = ({
 
       if (loginMethod === "email") {
         res = await axios.post(
-          "http://localhost:5000/api/email/verify-otp",
+          `${API_BASE}/api/email/verify-otp`,
           {
             email: form.email,
             otp: form.otp,
@@ -116,7 +117,7 @@ const Login = ({
         );
       } else {
         res = await axios.post(
-          "http://localhost:5000/api/sms/verify-otp",
+          `${API_BASE}/api/sms/verify-otp`,
           {
             phone: form.phone,
             otp: form.otp,
