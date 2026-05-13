@@ -143,7 +143,8 @@ const Register = ({
     };
 
   const handleSendEmailOTP = async () => {
-    if (!form.email) {
+    const trimmedEmail = form.email.trim();
+    if (!trimmedEmail) {
       return toast.error("Please enter your email");
     }
 
@@ -154,17 +155,16 @@ const Register = ({
       await axios.post(
         `${API_BASE}/api/email/send-otp`,
         {
-          email: form.email,
+          email: trimmedEmail,
           isRegistration: true,
         }
       );
 
       toast.success("OTP sent to your email");
     } catch (err) {
-      toast.error(
-        err.response?.data?.message ||
-        "Failed to send OTP"
-      );
+      console.error("Email OTP Send Error:", err);
+      const errorMsg = err.response?.data?.message || err.response?.data?.msg || "Failed to send OTP";
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
       setLoadingMessage("");
@@ -173,7 +173,9 @@ const Register = ({
 
 
   const handleVerifyEmailOTP = async () => {
-    if (!form.emailOtp) {
+    const trimmedOtp = form.emailOtp.trim();
+    const trimmedEmail = form.email.trim();
+    if (!trimmedOtp) {
       return toast.error("Please enter the email OTP");
     }
 
@@ -184,8 +186,8 @@ const Register = ({
       await axios.post(
         `${API_BASE}/api/email/verify-otp`,
         {
-          email: form.email,
-          otp: form.emailOtp,
+          email: trimmedEmail,
+          otp: trimmedOtp,
           isRegistration: true,
         }
       );
@@ -193,10 +195,9 @@ const Register = ({
       setEmailVerified(true);
       toast.success("Email verified successfully");
     } catch (err) {
-      toast.error(
-        err.response?.data?.message ||
-        "Email OTP verification failed"
-      );
+      console.error("Email OTP Verify Error:", err);
+      const errorMsg = err.response?.data?.message || err.response?.data?.msg || "Email OTP verification failed";
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
       setLoadingMessage("");
@@ -204,7 +205,9 @@ const Register = ({
   };
 
   const handleSendPhoneOTP = async () => {
-    if (!form.email || !form.phone) {
+    const trimmedEmail = form.email.trim();
+    const trimmedPhone = form.phone.trim();
+    if (!trimmedEmail || !trimmedPhone) {
       return toast.error("Please enter both email and phone number before sending phone OTP");
     }
 
@@ -215,18 +218,17 @@ const Register = ({
       await axios.post(
         `${API_BASE}/api/sms/send-otp`,
         {
-          email: form.email,
-          phone: form.phone,
+          email: trimmedEmail,
+          phone: trimmedPhone,
           isRegistration: true,
         }
       );
 
       toast.success("OTP sent to your phone");
     } catch (err) {
-      toast.error(
-        err.response?.data?.message ||
-        "Failed to send SMS OTP"
-      );
+      console.error("Phone OTP Send Error:", err);
+      const errorMsg = err.response?.data?.message || err.response?.data?.msg || "Failed to send SMS OTP";
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
       setLoadingMessage("");
@@ -234,7 +236,10 @@ const Register = ({
   };
 
   const handleVerifyPhoneOTP = async () => {
-    if (!form.phoneOtp) {
+    const trimmedOtp = form.phoneOtp.trim();
+    const trimmedEmail = form.email.trim();
+    const trimmedPhone = form.phone.trim();
+    if (!trimmedOtp) {
       return toast.error("Please enter the phone OTP");
     }
 
@@ -245,9 +250,9 @@ const Register = ({
       await axios.post(
         `${API_BASE}/api/sms/verify-otp`,
         {
-          email: form.email,
-          phone: form.phone,
-          otp: form.phoneOtp,
+          email: trimmedEmail,
+          phone: trimmedPhone,
+          otp: trimmedOtp,
           isRegistration: true,
         }
       );
@@ -255,10 +260,9 @@ const Register = ({
       setPhoneVerified(true);
       toast.success("Phone verified successfully");
     } catch (err) {
-      toast.error(
-        err.response?.data?.message ||
-        "Phone OTP verification failed"
-      );
+      console.error("Phone OTP Verify Error:", err);
+      const errorMsg = err.response?.data?.message || err.response?.data?.msg || "Phone OTP verification failed";
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
       setLoadingMessage("");

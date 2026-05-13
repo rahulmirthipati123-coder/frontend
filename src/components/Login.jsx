@@ -44,39 +44,46 @@ const Login = ({
 
   const handleSendOTP = async () => {
     try {
-      setLoadingMessage("Sending OTP...");
-      setLoading(true);
+      const trimmedEmail = form.email.trim();
+      const trimmedPhone = form.phone.trim();
 
       if (loginMethod === "email") {
-        if (!form.email || !form.password) {
+        if (!trimmedEmail || !form.password) {
           return toast.error("Please enter email and password");
         }
+
+        setLoadingMessage("Verifying credentials...");
+        setLoading(true);
 
         await axios.post(
           `${API_BASE}/api/auth/login`,
           {
-            email: form.email,
+            email: trimmedEmail,
             password: form.password,
           }
         );
 
+        setLoadingMessage("Sending OTP to email...");
         await axios.post(
           `${API_BASE}/api/email/send-otp`,
           {
-            email: form.email,
+            email: trimmedEmail,
           }
         );
 
         toast.success("OTP sent to your email");
       } else {
-        if (!form.phone) {
+        if (!trimmedPhone) {
           return toast.error("Please enter your phone number");
         }
+
+        setLoadingMessage("Sending OTP to phone...");
+        setLoading(true);
 
         await axios.post(
           `${API_BASE}/api/sms/send-otp`,
           {
-            phone: form.phone,
+            phone: trimmedPhone,
             isRegistration: false,
           }
         );
@@ -86,10 +93,9 @@ const Login = ({
 
       setStep("otp");
     } catch (err) {
-      toast.error(
-        err.response?.data?.message ||
-        "Failed to send OTP"
-      );
+      console.error("OTP Send Error:", err);
+      const errorMsg = err.response?.data?.message || err.response?.data?.msg || "Failed to send OTP";
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
       setLoadingMessage("");
@@ -97,7 +103,8 @@ const Login = ({
   };
 
   const handleVerifyOTP = async () => {
-    if (!form.otp) {
+    const trimmedOtp = form.otp.trim();
+    if (!trimmedOtp) {
       return toast.error("Please enter the OTP");
     }
 
@@ -105,13 +112,15 @@ const Login = ({
       setLoadingMessage("Verifying OTP...");
       setLoading(true);
       let res;
+      const trimmedEmail = form.email.trim();
+      const trimmedPhone = form.phone.trim();
 
       if (loginMethod === "email") {
         res = await axios.post(
           `${API_BASE}/api/email/verify-otp`,
           {
-            email: form.email,
-            otp: form.otp,
+            email: trimmedEmail,
+            otp: trimmedOtp,
             isRegistration: false,
           }
         );
@@ -119,8 +128,8 @@ const Login = ({
         res = await axios.post(
           `${API_BASE}/api/sms/verify-otp`,
           {
-            phone: form.phone,
-            otp: form.otp,
+            phone: trimmedPhone,
+            otp: trimmedOtp,
             isRegistration: false,
           }
         );
@@ -132,9 +141,9 @@ const Login = ({
       toast.success("Login successful");
       goToDashboard();
     } catch (err) {
-      toast.error(
-        err.response?.data?.message || "OTP verification failed"
-      );
+      console.error("OTP Verify Error:", err);
+      const errorMsg = err.response?.data?.message || err.response?.data?.msg || "OTP verification failed";
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
       setLoadingMessage("");
